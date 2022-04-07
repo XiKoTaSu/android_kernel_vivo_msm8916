@@ -113,6 +113,10 @@ bool early_boot_irqs_disabled __read_mostly;
 
 enum system_states system_state __read_mostly;
 EXPORT_SYMBOL(system_state);
+unsigned int is_atboot;
+EXPORT_SYMBOL(is_atboot);
+unsigned int power_off_charging_mode;
+EXPORT_SYMBOL(power_off_charging_mode);
 
 /*
  * Boot command-line arguments
