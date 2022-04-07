@@ -135,6 +135,12 @@
 		qcom,y-offset = <0>;
 	};
 
+         switch_gsensor {
+		  compatible = "vivo-gsensor";
+		  sensor-name = "gsensor";
+		/*  sensor,gpio-irq = <&msm_gpio 21 0x00>;  */
+	  };
+
 	i2c@78ba000 { /* BLSP1 QUP6 */
 		status = "okay";
 
@@ -148,92 +154,71 @@
 		/delete-node/ avago@39;
 		/delete-node/ akm@c;
 
-		tsl2772@39 {
-			compatible = "taos,tsl2772";
-			reg = <0x39>;
-			pinctrl-names = "default","sleep";
-			pinctrl-0 = <&tsl2772x_default>;
-			pinctrl-1 = <&tsl2772x_sleep>;
-			interrupt-parent = <&msm_gpio>;
-			interrupts = <113 0x2002>;
+		TMD2771@39 {
+			compatible = "TMD2771";
 			vdd-supply = <&pm8916_l17>;
-			vio-supply = <&pm8916_l6>;
-			tsl,irq-gpio = <&msm_gpio 113 0x2002>;
-			tsl,als-gate = <10>;    
-			tsl,als-gain = <8>;     
-			tsl,control-reg = <0x21>; 
-			tsl,wait-reg = <0x00>;
-			tsl,ps-thdh = <950>;
-			tsl,ps-thdl = <900>;
-			tsl,ps-ppcount = <7>; 
-			tsl,ps-thdl_offset = <90>;
-			tsl,ps-thdh_offset = <180>;
-			tsl,mmi-thdh-limit = <800>;
-			tsl,mmi-thdl-limit = <0>;
-			tsl,use-fir;
-			status = "ok";
+			vddio-supply = <&pm8916_l6>;
+			interrupt-parent = <&msm_gpio>;
+			interrupts = <113 0x00>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&apds99xx_default>;
+			reg = <0x39>;
+			irq-gpio = <&msm_gpio 113 0x00>;
 		};
 
 		lis3dh_acc@18 {
-			compatible = "st,lis3dh";
+			compatible = "lis3dh_acc";
 			reg = <0x18>;
 			vdd-supply = <&pm8916_l17>;
 			vddio-supply = <&pm8916_l6>;
-			pinctrl-names = "lis3dh_default","lis3dh_sleep";
-			pinctrl-0 = <&lis3dh_int1_default>;
-			pinctrl-1 = <&lis3dh_int1_sleep>;
+
 			interrupt-parent = <&msm_gpio>;
-			interrupts = <21 0x0>;
+			interrupts = <21 0x00>;
 			st,min-interval = <10>;
 			st,init-interval = <200>;
 			st,axis-map-x = <1>;
 			st,axis-map-y = <0>;
 			st,axis-map-z = <2>;
 			st,g-range = <2>;
-			/*st,negate-x;*/ /*Disabled boolean property*/
-			st,negate-y; /*Enabled boolean property*/
-			/*st,negate-z;*/ /*Disabled boolean property*/
-			st,gpio-int1 = <&msm_gpio 21 0x2002>;
-			status = "ok";
+			st,negate-x = <0>;
+			st,negate-y = <1>;
+			st,negate-z = <0>;
+			sensor,gpio-irq = <&msm_gpio 21 0x00>;
 		};
-
-		alps@c { /* Magnetic field sensor */
-		     compatible = "alps,hscdtd007a";
-		     reg = <0x0c>;
-		     vdd-supply = <&pm8916_l17>;
-		     vio-supply = <&pm8916_l6>;
-		     hscdtd,layout = <0x5>;
-			 status = "ok";
-		};
-
-		yamaha@2e {
-			compatible = "yamaha,yas533";
-			reg = <0x2e>;
+		ALPS007@0C {
+    		compatible = "alps,hscdtd007a";
+    		reg = <0x0C>;
+    		alps,layout =<5>;
+    		alps,auto-report=<1>;
+    		vdd-supply = <&pm8916_l17>;
+    		vio-supply = <&pm8916_l6>;
+    		};
+		yas533@2E {
+			compatible = "yas533_mag";
+			reg = <0x2E>;
+			ak,layout =<6>;
 			vdd-supply = <&pm8916_l17>;
 			vio-supply = <&pm8916_l6>;
-			yas,position = <3>;
-			status = "ok";
-		};
 
-		akm8963@0d {
-			compatible = "ak,ak8963";
-			reg = <0x0d>;
-			ak,layout = <4>;
-			ak,auto-report = <1>;
+		};
+		akm8963@0D {
+			compatible = "akm,akm8963";
+			reg = <0x0D>;
+			ak,layout =<4>;
+			ak,auto-report=<1>;
 			vdd-supply = <&pm8916_l17>;
 			vio-supply = <&pm8916_l6>;
-			status = "ok";
+			iic-address=<0x0C>;
 		};
-
-		akm09912@0f {
-			compatible = "ak,ak09912";
-			reg = <0x0f>;
-			ak,layout = <8>;
-			ak,auto-report = <1>;
-			vdd-supply = <&pm8916_l17>;
-			vio-supply = <&pm8916_l6>;
-			status = "ok";
-		};
+		akm09912@0F{
+		    compatible = "ak,ak09912";
+		    reg = <0x0F>;
+		    vdd-supply = <&pm8916_l17>;
+		    vio-supply = <&pm8916_l6>;
+		    akm,layout = <8>;
+		    akm,auto-report=<1>;
+		    iic-address=<0x0C>;
+	    };
 
 	};
 
@@ -355,3 +340,29 @@
 };
 
 
+
+&soc {
+
+
+            sensorcfg {
+		compatible = "vivo,sensor-config";
+		vivo,product-model = "PD1510";
+		ps-para0 {
+			base-val = <100>;
+			low-thres = <0>;
+			high-thres = <850>;
+			step-num = <4>;
+			step0 = <  0 200 150 60>;
+			step1 = <200 400 140 50>;
+			step2 = <400 550 130 40>;
+			step3 = <550 850 120 30>;
+		};
+		
+		als-para0 {
+			gain = <109>;
+			low-thres = <50>;
+			high-thres = <1500>;
+		};
+	};
+	
+};

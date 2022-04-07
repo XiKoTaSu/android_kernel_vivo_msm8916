@@ -31,20 +31,6 @@
 		};
 	};
 
-	lis3dh_int1_pin {
-		qcom,pins = <&gp 21>;
-		qcom,num-grp-pins = <1>;
-		label = "lis3dh_int_pin";
-		lis3dh_int1_default: int1_default {
-			drive-strength = <6>;
-			bias-pull-down;
-		};
-		lis3dh_int1_sleep: int1_sleep {
-			drive-strength = <2>;
-			bias-pull-down;
-		};
-	};
-
 	cdc-ext-spk-pa {
 		qcom,pins = <&gp 120>;
 		qcom,num-grp-pins = <1>;
@@ -121,20 +107,6 @@
 			bias-disable = <0>;
 		};
 	};
-    
-    tsl2772x_int_pin {
-			qcom,pins = <&gp 113>;
-			qcom,pin-func = <0>;
-			qcom,num-grp-pins = <1>;
-			label = "tsl2772x-irq";
-			tsl2772x_default: tsl2772x_default {
-				drive-strength = <6>;
-				bias-pull-up;
-			};
-			tsl2772x_sleep: tsl2772x_sleep {
-				drive-strength = <6>;
-				bias-pull-up;
-			};
-		};
+
          
 };
