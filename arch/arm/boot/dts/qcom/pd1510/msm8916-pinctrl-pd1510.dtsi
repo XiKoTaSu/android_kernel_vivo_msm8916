@@ -47,57 +47,25 @@
 		};
 	};
 
-	goodix_ts_int {
-		qcom,pins = <&gp 13>;
-		qcom,pin-func = <0>;
-		qcom,num-grp-pins = <1>;
-		label = "goodix_ts_int";
-
-		gdix_ts_int_default: gdix_ts_int_default {
-			drive-strength = <2>;
-			input-enable;
-			bias-disable;
-		};
-
-		gdix_ts_int_output_high: gdix_ts_int_output_high {
-			output-high;
-		};
-
-		gdix_ts_int_output_low: gdix_ts_int_output_low {
-			output-low;
-		};
-
-		gdix_ts_int_input: gdix_ts_int_input {
-			input-enable;
-			bias-disable;
-		};
-	};
-
-	goodix_ts_rst {
-		qcom,pins = <&gp 12>;
-		qcom,pin-func = <0>;
-		qcom,num-grp-pins = <1>;
-		label = "goodix_ts_rst";
-
-		gdix_ts_rst_default: gdix_ts_rst_default {
-			drive-strength = <2>;
-			input-enable;
-			bias-disable;
-		};
-
-		gdix_ts_rst_output_high: gdix_ts_rst_output_high {
-			output-high;
-		};
-
-		gdix_ts_rst_output_low: gdix_ts_rst_output_low {
-			output-low;
-		};
-
-		gdix_ts_rst_input: gdix_ts_rst_input {
-			input-enable;
-			bias-disable;
-		};
-	};
+	
+	/* vivo add pingrp for touchscreen */
+		gt9xx_int_pin {
+            		qcom,pins = <&gp 13>;
+            		qcom,num-grp-pins = <1>;
+            		qcom,pin-func = <0>;
+            		label = "gt9xx_int_pin";
+            		/* active state */
+            		gt9xx_int_default: gt9xx_int_default {
+				drive-strength = <2>; /* 2 MA */
+				bias-disable;   /*[BUGFIX]MOD by TCTSZ-WH,2014-5-22,Configure TP INT as NO-PULL.*/
+			};
+            		/*suspended state */
+            		gt9xx_int_sleep: gt9xx_int_sleep {
+               			drive-strength = <2>; /* 2 MA */
+                		bias-disable;
+            		};
+        	};
+		/*vivo add end*/
 
 	usb-id-pin {
 		qcom,pins = <&gp 110>;
