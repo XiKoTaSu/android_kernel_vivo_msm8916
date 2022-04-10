@@ -33,8 +33,11 @@
 #define NT35596_BUF_5_STATUS 0x80
 #define NT35596_MAX_ERR_CNT 2
 
-#define MIN_REFRESH_RATE 48
+#define MIN_REFRESH_RATE 30
+int vivo_esd_check_ps_status = 0;
+int vivo_esd_check_enable_status=0;
 #define DEFAULT_MDP_TRANSFER_TIME 14000
+int panel_id=0;
 
 DEFINE_LED_TRIGGER(bl_led_trigger);
 
@@ -1166,7 +1169,8 @@ static int mdss_dsi_parse_panel_features(struct device_node *np,
 		(pinfo->ulps_feature_enabled ? "enabled" : "disabled"));
 	pinfo->esd_check_enabled = of_property_read_bool(np,
 		"qcom,esd-check-enabled");
-
+       if(pinfo->esd_check_enabled)
+       	vivo_esd_check_enable_status= 1;
 	pinfo->ulps_suspend_enabled = of_property_read_bool(np,
 		"qcom,suspend-ulps-enabled");
 	pr_info("%s: ulps during suspend feature %s", __func__,
@@ -1196,6 +1200,7 @@ static int mdss_dsi_parse_panel_features(struct device_node *np,
 	if (pinfo->panel_ack_disabled && pinfo->esd_check_enabled) {
 		pr_warn("ESD should not be enabled if panel ACK is disabled\n");
 		pinfo->esd_check_enabled = false;
+		vivo_esd_check_enable_status= 0;
 	}
 
 	if (ctrl->disp_en_gpio <= 0) {
@@ -1855,6 +1860,113 @@ error:
 	return -EINVAL;
 }
 
+static int creat_lcm_id = 0;
+static struct kobject disp_kobject;
+static ssize_t lcm_id_show(struct kobject *kobj,
+						struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%02x\n", panel_id);
+}
+static struct kobj_attribute lcm_id_attribute =
+__ATTR(lcm_id, 0444, lcm_id_show, NULL);
+static ssize_t vivo_esd_check_show(struct kobject *kobj,// show oled acl mode state
+						struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%02x\n", vivo_esd_check_ps_status);
+}
+static ssize_t vivo_esd_check_store(struct kobject *kobj,
+						struct kobj_attribute *attr, const char *buf, size_t count)
+{
+    int ret, temp;
+    ret = kstrtoint(buf, 10, &temp);
+    if (ret) {
+		pr_err("Invalid input for lcm cali\n");
+		//return -EINVAL;
+	}
+    vivo_esd_check_ps_status = temp;
+	return count;
+}
+static struct kobj_attribute vivo_esd_check_attribute =
+__ATTR(vivo_esd_check_ps, 0666, vivo_esd_check_show, vivo_esd_check_store);
+
+static ssize_t vivo_esd_check_enable_show(struct kobject *kobj,
+						struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d", vivo_esd_check_enable_status);
+}
+
+static ssize_t vivo_esd_check_enable_store(struct kobject *kobj,
+						struct kobj_attribute *attr, const char *buf, size_t count)
+{
+    int ret, temp;
+    ret = kstrtoint(buf, 10, &temp);
+    if (ret) {
+		pr_err("Invalid input for lcm cali\n");
+		//return -EINVAL;
+	}
+    vivo_esd_check_enable_status = temp;
+	return count;
+}
+static struct kobj_attribute vivo_esd_check_enable_attribute =
+__ATTR(vivo_esd_check_enable, 0666, vivo_esd_check_enable_show, vivo_esd_check_enable_store);
+
+static struct attribute *disp_lcm_sys_attrs[] = {
+	&lcm_id_attribute.attr,	
+       &vivo_esd_check_enable_attribute.attr,
+	&vivo_esd_check_attribute.attr,	
+	NULL
+};
+static ssize_t disp_lcm_object_show(struct kobject *k, struct attribute *attr, char *buf)
+{
+	struct kobj_attribute *kobj_attr;
+	int ret = -EIO;
+
+	kobj_attr = container_of(attr, struct kobj_attribute, attr);
+
+	if (kobj_attr->show)
+		ret = kobj_attr->show(k, kobj_attr, buf);
+
+	return ret;
+}
+static ssize_t disp_lcm_object_store(struct kobject *k, struct attribute *attr,
+			      const char *buf, size_t count)
+{
+	struct kobj_attribute *kobj_attr;
+	int ret = -EIO;
+
+	kobj_attr = container_of(attr, struct kobj_attribute, attr);
+
+	if (kobj_attr->store)
+		ret = kobj_attr->store(k, kobj_attr, buf, count);
+
+	return ret;
+}
+static void disp_lcm_object_release(struct kobject *kobj)
+{
+	/* nothing to do temply */
+	return;
+}
+static const struct sysfs_ops disp_lcm_object_sysfs_ops = {
+	.show = disp_lcm_object_show,
+	.store = disp_lcm_object_store,
+};
+static struct kobj_type disp_lcm_object_type = {
+	.sysfs_ops	= &disp_lcm_object_sysfs_ops,
+	.release	= disp_lcm_object_release,
+	.default_attrs = disp_lcm_sys_attrs,
+};
+static int disp_creat_sys_file(void) 
+{ 
+   	memset(&disp_kobject, 0x00, sizeof(disp_kobject));
+
+    if (kobject_init_and_add(&disp_kobject, &disp_lcm_object_type, NULL, "lcm")) {
+        kobject_put(&disp_kobject);
+        return -ENOMEM;
+    }
+    kobject_uevent(&disp_kobject, KOBJ_ADD);
+	creat_lcm_id = 1;
+    return 0;
+}
 int mdss_dsi_panel_init(struct device_node *node,
 	struct mdss_dsi_ctrl_pdata *ctrl_pdata,
 	bool cmd_cfg_cont_splash)
@@ -1902,6 +2014,8 @@ int mdss_dsi_panel_init(struct device_node *node,
 	ctrl_pdata->low_power_config = mdss_dsi_panel_low_power_config;
 	ctrl_pdata->panel_data.set_backlight = mdss_dsi_panel_bl_ctrl;
 	ctrl_pdata->switch_mode = mdss_dsi_panel_switch_mode;
+        if(creat_lcm_id == 0)
+		disp_creat_sys_file(); // add lcm sysfs id interface
 
 	return 0;
 }
