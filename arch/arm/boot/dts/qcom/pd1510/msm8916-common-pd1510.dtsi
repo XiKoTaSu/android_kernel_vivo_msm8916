@@ -164,6 +164,13 @@
 	};
 };
 
+&mdss_mdp {
+	qcom,mdss-pref-prim-intf = "dsi";
+};
+
+
+
+
 
 
 
