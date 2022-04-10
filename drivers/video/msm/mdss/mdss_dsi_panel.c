@@ -38,6 +38,7 @@ int vivo_esd_check_ps_status = 0;
 int vivo_esd_check_enable_status=0;
 #define DEFAULT_MDP_TRANSFER_TIME 14000
 int panel_id=0;
+char project_name[MDSS_MAX_PANEL_LEN];
 
 DEFINE_LED_TRIGGER(bl_led_trigger);
 
@@ -1497,6 +1498,14 @@ static int mdss_panel_parse_dt(struct device_node *np,
 		return -EINVAL;
 	}
 	pinfo->yres = (!rc ? tmp : 480);
+	#if 1
+	rc = of_property_read_u32(np, "qcom,mdss-dsi-panel-id", &panel_id); 
+    if (rc) {
+		pr_err("%s:%d panel id dt parse failed\n", __func__, __LINE__);
+	}
+	else
+		pr_info("%s: Panel ID = %d\n", __func__, panel_id);
+	#endif
 
 	rc = of_property_read_u32(np,
 		"qcom,mdss-pan-physical-width-dimension", &tmp);
@@ -1972,7 +1981,7 @@ int mdss_dsi_panel_init(struct device_node *node,
 	bool cmd_cfg_cont_splash)
 {
 	int rc = 0;
-	static const char *panel_name;
+	static const char *panel_name, *project_name_tmp;
 	struct mdss_panel_info *pinfo;
 
 	if (!node || !ctrl_pdata) {
@@ -1991,6 +2000,14 @@ int mdss_dsi_panel_init(struct device_node *node,
 	} else {
 		pr_info("%s: Panel Name = %s\n", __func__, panel_name);
 		strlcpy(&pinfo->panel_name[0], panel_name, MDSS_MAX_PANEL_LEN);
+	}
+	project_name_tmp = of_get_property(node, "qcom,mdss-dsi-project-name", NULL);  // add for project Identify
+	if (!project_name_tmp) {
+		pr_info("%s:%d, Project name not specified\n",
+						__func__, __LINE__);
+	}else {
+		strlcpy(&project_name[0], project_name_tmp, MDSS_MAX_PANEL_LEN);
+		pr_info("%s: Project Name = %s\n", __func__, project_name);
 	}
 	rc = mdss_panel_parse_dt(node, ctrl_pdata);
 	if (rc) {
