@@ -40,6 +40,29 @@ int vivo_esd_check_enable_status=0;
 int panel_id=0;
 char project_name[MDSS_MAX_PANEL_LEN];
 
+
+static int LV52207_level_map_pd1422F_ex[256]={
+0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,
+12,12,13,13,14,14,15,15,16,16,17,17,18,18,19,
+19,20,20,21,21,22,22,23,23,24,24,25,25,26,26,
+27,27,28,28,29,29,30,30,31,31,32,32,33,33,34,
+34,35,35,36,36,37,37,38,38,39,39,40,40,41,41,
+42,42,43,43,44,44,45,45,46,46,47,47,48,49,50,
+51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,
+66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,
+81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,
+96,97,98,99,100,101,102,103,104,105,106,107,
+108,109,110,111,112,113,114,115,116,117,118,
+119,120,121,122,123,124,125,126,127,128,129,
+130,131,132,133,134,135,137,139,141,143,145,
+147,149,151,153,155,157,159,161,163,165,167,
+169,171,173,175,177,179,181,183,185,187,189,
+191,193,195,197,199,201,203,205,207,209,211,
+213,215,217,219,221,223,225,227,229,231,233,
+235,237,239,241,243,245
+	};
+
 DEFINE_LED_TRIGGER(bl_led_trigger);
 
 void mdss_dsi_panel_pwm_cfg(struct mdss_dsi_ctrl_pdata *ctrl)
@@ -55,6 +78,7 @@ void mdss_dsi_panel_pwm_cfg(struct mdss_dsi_ctrl_pdata *ctrl)
 	ctrl->pwm_enabled = 0;
 }
 
+static int pre_level=1;
 static void mdss_dsi_panel_bklt_pwm(struct mdss_dsi_ctrl_pdata *ctrl, int level)
 {
 	int ret;
@@ -74,11 +98,14 @@ static void mdss_dsi_panel_bklt_pwm(struct mdss_dsi_ctrl_pdata *ctrl, int level)
 				pr_err("%s: pwm_config_us() failed err=%d.\n",
 						__func__, ret);
 			pwm_disable(ctrl->pwm_bl);
+			pr_err("%s: close PWM \n", __func__);
 		}
 		ctrl->pwm_enabled = 0;
+		pre_level =level;
 		return;
 	}
-
+       if(pre_level==0&&level>0)
+	   	pr_err("%s: open PWM \n", __func__);
 	duty = level * ctrl->pwm_period;
 	duty /= ctrl->bklt_max;
 
@@ -115,6 +142,7 @@ static void mdss_dsi_panel_bklt_pwm(struct mdss_dsi_ctrl_pdata *ctrl, int level)
 				ret);
 		ctrl->pwm_enabled = 1;
 	}
+	pre_level =level;
 }
 
 static char dcs_cmd[2] = {0x54, 0x00}; /* DTYPE_DCS_READ */
@@ -546,7 +574,7 @@ static void mdss_dsi_panel_bl_ctrl(struct mdss_panel_data *pdata,
 {
 	struct mdss_dsi_ctrl_pdata *ctrl_pdata = NULL;
 	struct mdss_dsi_ctrl_pdata *sctrl = NULL;
-
+	int level=bl_level;
 	if (pdata == NULL) {
 		pr_err("%s: Invalid input data\n", __func__);
 		return;
@@ -569,6 +597,10 @@ static void mdss_dsi_panel_bl_ctrl(struct mdss_panel_data *pdata,
 		led_trigger_event(bl_led_trigger, bl_level);
 		break;
 	case BL_PWM:
+
+		 bl_level = LV52207_level_map_pd1422F_ex[level];
+			
+		pr_err("backlight level is %d,after map is %d\n", level,bl_level);
 		mdss_dsi_panel_bklt_pwm(ctrl_pdata, bl_level);
 		break;
 	case BL_DCS_CMD:
