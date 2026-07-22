@@ -1,0 +1,71 @@
+/* Copyright (c) 2020, The Linux Foundation. All rights reserved.
+*  Copyright (c) 2020, the_shahnawaz_sheikh (sheikhshahnawaz41299).
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License version 2 and
+* only version 2 as published by the Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*/
+
+&mdss_mdp {
+
+		dsi_orise8012a_fwvga_cmd: qcom,mdss_dsi_orise8012a_fwvga_cmd {
+				qcom,mdss-dsi-panel-name = "orise8012a fwvga command mode dsi panel";
+				qcom,mdss-dsi-panel-controller = <&mdss_dsi0>;
+				qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
+				qcom,mdss-dsi-panel-destination = "display_1";
+				qcom,mdss-dsi-panel-framerate = <0x3c>;
+				qcom,mdss-dsi-virtual-channel-id = <0x00>;
+				qcom,mdss-dsi-stream = <0x00>;
+				qcom,mdss-dsi-panel-id = <0x04>;
+				qcom,mdss-dsi-panel-width = <0x1e0>;
+				qcom,mdss-dsi-panel-height = <0x356>;
+				qcom,mdss-dsi-h-front-porch = <0x4c>;
+				qcom,mdss-dsi-h-back-porch = <0x4c>;
+				qcom,mdss-dsi-h-pulse-width = <0x46>;
+				qcom,mdss-dsi-h-sync-skew = <0x00>;
+				qcom,mdss-dsi-v-back-porch = <0x1b>;
+				qcom,mdss-dsi-v-front-porch = <0x06>;
+				qcom,mdss-dsi-v-pulse-width = <0x05>;
+				qcom,mdss-dsi-h-left-border = <0x00>;
+				qcom,mdss-dsi-h-right-border = <0x00>;
+				qcom,mdss-dsi-v-top-border = <0x00>;
+				qcom,mdss-dsi-v-bottom-border = <0x00>;
+				qcom,mdss-dsi-bpp = <0x18>;
+				qcom,mdss-dsi-underflow-color = <0xff>;
+				qcom,mdss-dsi-border-color = <0x00>;
+				qcom,mdss-dsi-on-command = [39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 04 ff 80 12 01 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 03 ff 80 12 39 01 00 00 00 00 02 00 90 39 01 00 00 00 00 02 b3 02 39 01 00 00 00 00 02 00 81 39 01 00 00 00 00 02 c0 57 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 03 c1 25 55 39 01 00 00 00 00 02 00 a1 39 01 00 00 00 00 02 b3 00 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 02 1c 00 39 01 00 00 00 00 02 00 b0 39 01 00 00 00 00 02 b3 18 39 01 00 00 00 00 02 00 a2 39 01 00 00 00 00 04 c0 10 05 15 39 01 00 00 00 00 02 00 b4 39 01 00 00 00 00 02 c0 55 39 01 00 00 00 00 02 00 81 39 01 00 00 00 00 03 c4 83 f2 39 01 00 00 00 00 02 00 8b 39 01 00 00 00 00 02 c4 24 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 02 c5 50 39 01 00 00 00 00 02 00 82 39 01 00 00 00 00 02 c5 f0 39 01 00 00 00 00 02 00 90 39 01 00 00 00 00 04 c5 02 79 01 39 01 00 00 00 00 02 00 94 39 01 00 00 00 00 04 c5 33 33 36 39 01 00 00 00 00 02 00 b2 39 01 00 00 00 00 02 c5 40 39 01 00 00 00 00 02 00 ba 39 01 00 00 00 00 03 f5 01 11 39 01 00 00 00 00 02 00 c2 39 01 00 00 00 00 02 f5 00 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 07 ce 82 01 1a 81 01 1a 39 01 00 00 00 00 02 00 90 39 01 00 00 00 00 07 ce 13 55 1a 13 56 1a 39 01 00 00 00 00 02 00 a0 39 01 00 00 00 00 0f ce 18 04 03 56 00 1a 00 18 03 03 57 00 1a 00 39 01 00 00 00 00 02 00 b0 39 01 00 00 00 00 0f ce 18 06 03 58 00 1a 00 18 05 03 59 00 1a 00 39 01 00 00 00 00 02 00 c0 39 01 00 00 00 00 0f ce 18 06 03 58 00 12 1a 18 05 03 59 00 12 1a 39 01 00 00 00 00 02 00 d0 39 01 00 00 00 00 0f ce 18 04 03 59 00 12 1a 18 03 03 5a 00 12 1a 39 01 00 00 00 00 02 00 c0 39 01 00 00 00 00 0c cf 00 00 00 00 00 00 01 84 00 0a 0a 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 0a cb 00 00 00 00 00 00 00 00 00 39 01 00 00 00 00 02 00 90 39 01 00 00 00 00 10 cb 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 39 01 00 00 00 00 02 00 a0 39 01 00 00 00 00 02 cb 00 39 01 00 00 00 00 02 00 a5 39 01 00 00 00 00 0b cb 00 00 00 00 00 00 00 00 00 00 39 01 00 00 00 00 02 00 b0 39 01 00 00 00 00 07 cb 00 00 00 00 00 00 39 01 00 00 00 00 02 00 c0 39 01 00 00 00 00 10 cb 15 00 15 15 15 15 15 00 00 00 00 00 00 00 00 39 01 00 00 00 00 02 00 d0 39 01 00 00 00 00 02 cb 00 39 01 00 00 00 00 02 00 d5 39 01 00 00 00 00 0b cb 00 00 00 00 00 00 00 00 00 15 39 01 00 00 00 00 02 00 e0 39 01 00 00 00 00 07 cb 15 15 15 15 00 15 39 01 00 00 00 00 02 00 f0 39 01 00 00 00 00 09 cb ff ff ff ff ff ff ff ff 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 0b cc 01 00 0b 09 0f 0d 05 00 00 00 39 01 00 00 00 00 02 00 90 39 01 00 00 00 00 07 cc 00 00 00 00 00 00 39 01 00 00 00 00 02 00 9a 39 01 00 00 00 00 06 cc 00 00 00 00 00 39 01 00 00 00 00 02 00 a0 39 01 00 00 00 00 0c cc 00 00 00 00 06 0e 10 0a 0c 00 02 39 01 00 00 00 00 02 00 b0 39 01 00 00 00 00 0b cc 06 00 0c 0a 0e 10 02 00 00 00 39 01 00 00 00 00 02 00 c0 39 01 00 00 00 00 07 cc 00 00 00 00 00 00 39 01 00 00 00 00 02 00 ca 39 01 00 00 00 00 06 cc 00 00 00 00 00 39 01 00 00 00 00 02 00 d0 39 01 00 00 00 00 0c cc 00 00 00 00 01 0f 0d 09 0b 00 05 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 03 d8 97 97 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 15 e1 04 12 1b 26 35 41 44 70 63 7f 82 6a 79 51 4d 3f 2f 20 1a 0d 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 15 e2 04 12 1c 26 35 42 44 70 63 7f 81 69 79 51 4d 3f 2f 20 1a 0d 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 22 ec 40 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 04 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 22 ed 40 43 43 34 34 44 43 34 34 44 43 43 34 34 44 43 34 34 44 43 43 34 34 44 43 43 34 44 43 43 34 34 04 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 22 ee 40 34 44 34 44 44 43 44 34 44 34 44 44 43 44 43 44 34 44 34 44 44 43 44 34 44 34 44 44 43 44 43 04 39 01 00 00 00 00 02 00 83 39 01 00 00 00 00 02 c1 50 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 02 c4 30 39 01 00 00 00 00 02 00 8a 39 01 00 00 00 00 02 c4 40 39 01 00 00 00 00 02 00 92 39 01 00 00 00 00 02 c4 08 39 01 00 00 00 00 02 00 b1 39 01 00 00 00 00 02 b0 b2 39 01 00 00 00 00 02 00 91 39 01 00 00 00 00 02 c1 08 39 01 00 00 00 00 02 00 a4 39 01 00 00 00 00 03 c5 55 55 39 01 00 00 00 00 02 00 aa 39 01 00 00 00 00 02 c0 aa 39 01 00 00 00 00 02 00 d0 39 01 00 00 00 00 02 c0 c0 39 01 00 00 00 00 02 00 80 39 01 00 00 00 00 03 ff ff ff 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 04 ff ff ff ff 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 03 99 35 45 05 01 00 00 00 00 02 35 00 05 01 00 00 78 00 02 11 00 05 01 00 00 14 00 02 29 00 39 01 00 00 00 00 02 00 00 39 01 00 00 00 00 03 99 00 00];
+				qcom,mdss-dsi-off-command = <0x39010000 0x200 0x390100 0x03 0x99354505 0x1000032 0x22800 0x5010000 0x78000210 0x390100 0x02 0x3901 0x00 0x3990000>;
+				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
+				qcom,mdss-dsi-off-command-state = "dsi_lp_mode";
+				qcom,mdss-dsi-h-sync-pulse = <0x01>;
+				qcom,mdss-dsi-traffic-mode = "burst_mode";
+				qcom,mdss-dsi-bllp-eof-power-mode;
+				qcom,mdss-dsi-bllp-power-mode;
+				qcom,mdss-dsi-lane-0-state;
+				qcom,mdss-dsi-lane-1-state;
+				qcom,mdss-dsi-te-pin-select = <0x18>;
+				qcom,mdss-dsi-wr-mem-start = <0x2c>;
+				qcom,mdss-dsi-te-dcs-command = <0x01>;
+				qcom,mdss-dsi-te-check-enable;
+				qcom,mdss-dsi-te-using-te-pin;
+				qcom,mdss-dsi-panel-timings = <0x831c1200 0x40421828 0x23030400>;
+				qcom,mdss-dsi-t-clk-post = <0x04>;
+				qcom,mdss-dsi-t-clk-pre = <0x1b>;
+				qcom,mdss-dsi-bl-min-level = <0x01>;
+				qcom,mdss-dsi-bl-max-level = <0xff>;
+				qcom,mdss-dsi-dma-trigger = "trigger_sw";
+				qcom,mdss-dsi-mdp-trigger = "none";
+				qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_pwm";
+				qcom,mdss-dsi-reset-sequence = <0x01 0x14 0x00 0x14 0x01 0x14>;
+				qcom,mdss-dsi-bl-pmic-pwm-frequency = <0x19>;
+				qcom,mdss-dsi-bl-pmic-bank-select = <0x00>;
+				qcom,mdss-dsi-pwm-gpio = <&pm8916_mpps 4 0>;
+				qcom,cont-splash-enabled;
+			};
+};
+

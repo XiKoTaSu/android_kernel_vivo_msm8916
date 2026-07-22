@@ -52,6 +52,7 @@
 
 #include <fdt.h>
 #include <libfdt.h>
+#include <linux/kernel.h>
 
 #include "libfdt_internal.h"
 

@@ -50,18 +50,17 @@ jobs:
           export SUBARCH="arm"
           export PATH="$GITHUB_WORKSPACE/workdir/gcc/bin/:$PATH"
           export CROSS_COMPILE="$GITHUB_WORKSPACE/workdir/gcc/bin/arm-linux-androideabi-"
-          export DTB_NAMES="${{ github.event.inputs.target }}"
           cd $GITHUB_WORKSPACE/workdir/source
           mkdir out
           
-          make O=out lineageos_pd1510_defconfig
+          make O=out lineageos_pd1419_defconfig
           make -j$(nproc --all) O=out
 
       - name: Upload Image
         uses: actions/upload-artifact@v4
         with:
-          name: Image
-          path: workdir/source/out/arch/arm/boot/Image
+          name: zImage
+          path: workdir/source/out/arch/arm/boot/zImage
           
       - name: Upload dtbs
         uses: actions/upload-artifact@v4

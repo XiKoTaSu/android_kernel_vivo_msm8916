@@ -1,0 +1,279 @@
+/* Copyright (c) 2018, The Linux Foundation. All rights reserved.
+*  Copyright (c) 2018, Ketut P. Kumajaya.
+*  Copyright (c) 2020, the_shahnawaz_sheikh (sheikhshahnawaz41299).
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License version 2 and
+* only version 2 as published by the Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*/
+
+#include "dsi-panel-nt35510s_fwvga_cmd.dtsi"
+#include "dsi-panel-orise8012a_fwvga_cmd.dtsi"
+#include "dsi-panel-orise8012a_tmfwvga.dtsi"
+#include "msm8916-camera-sensor-cdp-pd1419.dtsi"
+#include "msm8916-pinctrl-pd1419.dtsi"
+#include "msm8916-common-pd1419.dtsi"
+
+
+&soc {
+
+	i2c@78b8000 {
+		smb358_otg_vreg: smb358-charger@57 {
+			compatible = "qcom,smb358-charger";
+			reg = <0x57>;
+			interrupt-parent = <&msm_gpio>;
+			interrupts = <62 8>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&smb_int_default>;
+
+			qcom,float-voltage-mv = <4360>;
+			qcom,recharge-mv = <50>;
+			//qcom,recharge-disabled;
+			regulator-name = "smb358_otg_vreg";
+			qcom,thermal-mitigation = <1300 700 600 0>;
+			qcom,fastchg-current-max-ma = <1300>;
+
+			qcom,disable-apsd;
+			qcom,bms-psy-name = "bms";
+			/* qcom,iterm-disabled; */
+			qcom,iterm-ma = <100>;
+			qcom,bms-controlled-charging;
+			qcom,chg-inhibit-disabled;
+			qcom,chg-vadc = <&pm8916_vadc>;
+			qcom,chg-adc_tm = <&pm8916_adc_tm>;
+			//qcom,vcc-i2c-supply = <&pm8916_l5>;
+			qcom,irq-gpio = <&msm_gpio 62 2>;
+
+			qcom,using-pmic-therm;
+			qcom,hot-bat-decidegc = <500>;
+			qcom,cold-bat-decidegc = <0>;
+			qcom,bat-present-decidegc = <200>;
+			/*
+			 * Below properties are used for enable JEITA
+			 */
+			qcom,warm-bat-decidegc = <450>;
+			qcom,cool-bat-decidegc = <150>;
+			qcom,warm-bat-ma = <1000>;
+			qcom,cool-bat-ma = <720>;
+			qcom,warm-bat-mv = <4100>;
+			qcom,cool-bat-mv = <4350>;
+			status = "ok";
+		};
+	};
+
+	
+
+	i2c@78b9000 { /* BLSP1 QUP5 */
+		synaptics@20 {
+			status = "disabled";
+		};
+
+        goodix@20 {
+            compatible = "goodix,gt9xx";
+            reg = <20>;
+            pinctrl-names = "gt9xx_int_default", "gt9xx_int_suspend";
+            pinctrl-0 = <&gt9xx_default>;
+            pinctrl-1 = <&gt9xx_sleep>;
+            interrupt-parent = <&msm_gpio>;
+            interrupts = <13 0>;
+            reset-gpios = <&msm_gpio 12 0>;
+            interrupt-gpios = <&msm_gpio 13 0>;
+            avdd-supply = <&pm8916_l16>;
+            vdd-supply = <&pm8916_l16>;
+            goodix,panel-coords = <0 0 480 854>;
+            goodix,display-coords = <0 0 480 854>;
+            goodix,button-map = <158 102 139>;
+            goodix,family-id = <0>;
+            goodix,i2c-pull-up;
+            goodix,cfg-data;
+        };
+    };
+	i2c@78ba000 { /* BLSP1 QUP6 */
+		status = "okay";
+
+		nfc-nci@e {
+			status = "disabled";
+		};
+	};
+
+	i2c@78b6000 { /* BLSP1 QUP2 */
+		/delete-node/ mpu6050@68;
+		/delete-node/ avago@39;
+		/delete-node/ akm@c;
+
+		taos@39 {
+			compatible = "ams,tmd2772";
+			reg = <0x39>;
+			interrupt-parent = <&msm_gpio>;
+			interrupts = <113 0x2002>;
+			pinctrl-names = "tmd2772_default","tmd2772_sleep";
+			pinctrl-0 = <&apds99xx_default>;
+			pinctrl-1 = <&apds99xx_sleep>;
+			vdd-supply = <&pm8916_l17>;
+			vio-supply = <&pm8916_l6>;
+			ams,irq-gpio = <&msm_gpio 113 0x2002>;
+			ams,pul_cnt = <12>;
+			ams,light-percent = <150>;
+		};
+
+		lis3dh_acc@18 {
+			compatible = "st,lis3dh";
+			reg = <0x18>;
+			vdd-supply = <&pm8916_l17>;
+			vddio-supply = <&pm8916_l6>;
+			pinctrl-names = "lis3dh_default","lis3dh_sleep";
+			pinctrl-0 = <&lis3dh_int1_default>;
+			pinctrl-1 = <&lis3dh_int1_sleep>;
+			interrupt-parent = <&msm_gpio>;
+			interrupts = <21 0x0>;
+			st,min-interval = <10>;
+			st,init-interval = <200>;
+			st,axis-map-x = <1>;
+			st,axis-map-y = <0>;
+			st,axis-map-z = <2>;
+			st,g-range = <2>;
+			/*st,negate-x;*/ /*Disabled boolean property*/
+			st,negate-y; /*Enabled boolean property*/
+			/*st,negate-z;*/ /*Disabled boolean property*/
+			st,gpio-int1 = <&msm_gpio 21 0x2002>;
+			status = "ok";
+		};
+
+		alps@c { /* Magnetic field sensor */
+		     compatible = "alps,hscdtd007a";
+		     reg = <0x0c>;
+		     vdd-supply = <&pm8916_l17>;
+		     vio-supply = <&pm8916_l6>;
+		     hscdtd,layout = <0x5>;
+			 status = "ok";
+		};
+
+		akm8963@0d {
+			compatible = "ak,ak8963";
+			reg = <0x0d>;
+			ak,layout = <4>;
+			ak,auto-report = <1>;
+			vdd-supply = <&pm8916_l17>;
+			vio-supply = <&pm8916_l6>;
+			status = "ok";
+		};
+	};
+
+	sound {
+		qcom,msm-mbhc-hphl-swh = <1>;
+		qcom,msm-hs-micbias-type = "external";
+		pinctrl-names = "cdc_lines_act",
+				"cdc_lines_sus";
+		pinctrl-0 = <&cdc_pdm_lines_act &cdc_ext_spk_pa_act>;
+		pinctrl-1 = <&cdc_pdm_lines_sus &cdc_ext_spk_pa_sus>;
+		/delete-property/ pinctrl-2;
+		/delete-property/ pinctrl-3;
+		/delete-property/ pinctrl-4;
+		/delete-property/ pinctrl-5;
+		/delete-property/ qcom,cdc-us-euro-gpios;
+		qcom,msm-spk-ext-pa = <&msm_gpio 120 0>;
+	};
+
+	
+	
+
+	gpio_keys {
+		/delete-node/ camera_focus;
+		/delete-node/ camera_snapshot;
+	};
+
+	spk_vreg: regulator_spk {
+		compatible = "regulator-fixed";
+		regulator-name = "spk_vreg";
+		startup-delay-us = <0>;
+		enable-active-high;
+		gpio = <&msm_gpio 121 0>;
+	};
+};
+
+&pm8916_tombak_dig {
+	cdc-vdd-spkdrv-supply = <&spk_vreg>;
+	qcom,cdc-vdd-spkdrv-voltage = <5000000 5000000>;
+	qcom,cdc-vdd-spkdrv-current = <20000>;
+	qcom,cdc-on-demand-supplies = "cdc-vdd-mic-bias",
+			"cdc-vdd-spkdrv";
+};
+
+&sdc2_cd_off {
+	/delete-property/ bias-disable;
+	bias-pull-up;
+};
+
+&sdc2_cmd_on {
+	drive-strength = <12>;
+};
+
+&sdhc_1 {
+	qcom,vdd-always-on;
+};
+
+&sdhc_2 {
+	qcom,clk-rates = <400000 25000000 50000000 100000000>;
+	cd-gpios = <&msm_gpio 38 0>;
+};
+
+
+&pm8916_gpios {
+	gpio@c100 { /* GPIO 2 */
+		status = "disabled";
+	};
+};
+
+&pm8916_rtc {
+	qcom,qpnp-rtc-alarm-pwrup = <1>;
+};
+
+
+
+&mdss_dsi0 {
+	qcom,dsi-pref-prim-pan = <&dsi_nt35510s_fwvga_cmd>;
+        
+    qcom,dsi-pref-sub-pan = <&dsi_orise8012a_fwvga_cmd>;
+	qcom,dsi-pref-sub1-pan = <&dsi_orise8012a_tmfwvga>;
+
+	qcom,platform-enable-gpio = <&msm_gpio 97 0>;
+	qcom,platform-reset-gpio = <&msm_gpio 25 0>;
+	qcom,platform-bklight-en-gpio = <&msm_gpio 8 0>;
+};
+
+/ {
+	pd1419_batterydata: qcom,battery-data {
+		/delete-node/ qcom,palladium-batterydata;
+
+		//#include "batterydata-b76-atl-4v35-2260mah.dtsi"
+		//#include "batterydata-desay-samsung-2260mah.dtsi"
+		#include "batterydata-Maxell-1900mAh-4v35-VBMS.dtsi"
+		#include "batterydata-Samsung-1900mAh-4v35-VBMS.dtsi"
+		//#include "batterydata-atl-nvt-4v35-2300mah.dtsi"
+	};
+};
+
+&pm8916_chg {
+	status = "ok";
+	qcom,resume-soc = <95>;
+	qcom,use-external-charger;
+};
+
+&pm8916_bms {
+	status = "ok";
+	qcom,resume-soc = <95>;
+	qcom,battery-data = <&pd1419_batterydata>;
+	qcom,force-bms-active-on-charger;
+    qcom,use-reported-soc;
+};
+
+&pm8916_leds {
+	status = "disabled";
+};
+
+

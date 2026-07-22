@@ -84,11 +84,13 @@ dtb-$(CONFIG_MACH_PD1510) += msm8916-mtp-pd1510.dtb \
 	msm8916-mtp-pd1510f_ex.dtb
 dtb-$(CONFIG_MACH_PD1309) += msm8916-mtp-pd1309.dtb \
     msm8916-mtp-pd1309f_ex.dtb
+dtb-$(CONFIG_MACH_PD1419) += msm8916-cdp-pd1419.dtb
 dtb-$(CONFIG_MACH_PD1505) += msm8916-mtp-pd1505.dtb \
     msm8916-mtp-pd1505f_ex.dtb
 else
 
 dtb-$(CONFIG_ARCH_MSM8916) += msm8916-cdp.dtb \
+    msm8916-cdp-pd1419.dtb \
 	msm8916-cdp-smb1360.dtb \
 	msm8916-mtp.dtb \
 	msm8916-mtp-smb1360.dtb \
