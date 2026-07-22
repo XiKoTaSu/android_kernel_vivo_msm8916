@@ -36,7 +36,7 @@ jobs:
           
       - name: Get GCC4.9 toolchain
         run: |
-          git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-9.0.0_r61 --depth=1 $GITHUB_WORKSPACE/workdir/gcc
+          git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-cts-7.0_r27 --depth=1 $GITHUB_WORKSPACE/workdir/gcc
 
       - name: Get Kernel souce
         run: |
