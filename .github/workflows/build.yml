@@ -67,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dtbs
-          path: workdir/source/out/arch/arm/boot/dts/qcom/*.dtb
+          path: workdir/source/out/arch/arm/boot/dts/msm8916-*.dtb
