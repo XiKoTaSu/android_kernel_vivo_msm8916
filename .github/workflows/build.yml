@@ -62,3 +62,9 @@ jobs:
         with:
           name: Image
           path: workdir/source/out/arch/arm/boot/Image
+          
+      - name: Upload dtbs
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtbs
+          path: workdir/source/out/arch/arm/boot/dts/qcom/*.dtb
