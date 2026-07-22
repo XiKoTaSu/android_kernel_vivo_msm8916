@@ -54,7 +54,7 @@ jobs:
           cd $GITHUB_WORKSPACE/workdir/source
           mkdir out
           
-          make O=out lineage_pd1510_defconfig
+          make O=out lineageos_pd1510_defconfig
           make -j$(nproc --all) O=out
 
       - name: Upload Image
