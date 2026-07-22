@@ -52,6 +52,7 @@ jobs:
           export CROSS_COMPILE="$GITHUB_WORKSPACE/workdir/gcc/bin/aarch64-linux-android-"
           export DTB_NAMES="${{ github.event.inputs.target }}"
           cd $GITHUB_WORKSPACE/workdir/source
+          mkdir out
           
           make O=out lineage_pd1510_defconfig
           make -j$(nproc --all) O=out
