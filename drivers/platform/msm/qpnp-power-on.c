@@ -590,13 +590,20 @@ qpnp_pon_input_dispatch(struct qpnp_pon *pon, u32 pon_type)
 		return -EINVAL;
 	}
 
-	pr_debug("PMIC input: code=%d, sts=0x%hhx\n",
-					cfg->key_code, pon_rt_sts);
-	key_status = pon_rt_sts & pon_rt_bit;
+	    pr_debug("PMIC input: code=%d, sts=0x%hhx\n",
+                    cfg->key_code, pon_rt_sts);
+    key_status = pon_rt_sts & pon_rt_bit;
 
-	/* simulate press event in case release event occured
-	 * without a press event
-	 */
+    /* DEBUG: 电源键按下时触发 panic（只在按下边沿触发一次） */
+    if (cfg->pon_type == PON_KPDPWR && key_status) {
+        panic("A panic hot restart has been triggered by KPDPWR press");
+        /* panic() 永不返回，下面代码不会执行 */
+    }
+
+    /* simulate press event in case release event occured
+     * without a press event
+     */
+
 	if (!cfg->old_state && !key_status) {
 		input_report_key(pon->pon_input, cfg->key_code, 1);
 		input_sync(pon->pon_input);
